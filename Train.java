@@ -55,21 +55,23 @@ public class Train
 		BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
 		String sentence;
 		int sentencesIndex = 0 ;
-		while((sentence = bufferedReader.readLine())!= null)
+		
+		while((sentence = bufferedReader.readLine()) != null)
 		{
 			sentences.add(sentence);
 		}
+		
 		bufferedReader.close();
 	}
 	
 	public static void createDatasetTable()
 	{
-		dataset = new String[sentences.size()][numOfFeatures+2];
+		dataset = new String[sentences.size()][numOfFeatures + 2];
 		initializeDataset();
 		int sentenceIndex = 0;
 		for(String sentence : sentences)
 		{
-			dataset[sentenceIndex][0] = "sentence-" + (sentenceIndex+1);
+			dataset[sentenceIndex][0] = "sentence-" + (sentenceIndex + 1);
 			sentence = sentence.replaceAll("[^a-zA-Z0-9]", " ");
 			
 			int index = 0;
@@ -95,8 +97,7 @@ public class Train
 					dataset[sentenceIndex][9] = "T";
 				if(word.toLowerCase().equals("are") )
 					dataset[sentenceIndex][10] = "T";
-//				if(word.toLowerCase().contains("aa"))
-//					dataset[sentenceIndex][11] = "T";
+
 				if(word.toLowerCase().equals("that") || word.toLowerCase().equals("there") || word.toLowerCase().equals("these") || word.toLowerCase().equals("this") || word.toLowerCase().equals("them"))
 					dataset[sentenceIndex][11] = "T";
 				
@@ -104,12 +105,12 @@ public class Train
 				{
 					if(word.equals("en"))
 					{
-						dataset[sentenceIndex][numOfFeatures+1] = "en";
+						dataset[sentenceIndex][numOfFeatures + 1] = "en";
 						p++;
 					}
 					else
 					{
-						dataset[sentenceIndex][numOfFeatures+1] = "nl";
+						dataset[sentenceIndex][numOfFeatures + 1] = "nl";
 						n++;
 					}
 					total++;
@@ -147,16 +148,16 @@ public class Train
 	
 	public static double calculateEntropyOfDataset(double p, double n, double total)
 	{
-		double e1 = p/(1.0*(p+n));
-		double e2 = n/(1.0*(p+n));
+		double e1 = p / (1.0 * (p + n));
+		double e2 = n / (1.0 * ( p + n));
 		double entropy = 0;
 
-		if(e1==0 && e2!=0)
+		if(e1 == 0 && e2 != 0)
 		{
 			entropy = -e2 * ( Math.log(e2) / (1.0 * Math.log(2) ) );
 		}
 			
-		else if(e2==0 && e1!=0)
+		else if(e2 == 0 && e1 != 0)
 		{
 			entropy = -e1*( Math.log(e1) / (1.0 * Math.log(2) ));
 		}
@@ -174,14 +175,14 @@ public class Train
 		int root = -1;
 		
 		
-		for(int col = 1; col < dataset[0].length -1; col++)
+		for(int col = 1; col < dataset[0].length -1; col ++)
 		{
 			double avgEntropy = 0.0;
 			double total2 = 0.0;
 			for(int bin = 0; bin < 2 ; bin++)
 			{
 				String comp = "F";
-				if(bin==1)
+				if(bin == 1)
 					comp = "T";
 				double total1 = 0.0;
 				double p1 = 0;
@@ -191,23 +192,23 @@ public class Train
 					if(dataset[row][col].equals(comp) && dataset[row][colCount-1].equals("en"))
 					{
 						p1++;
-						total1++;
-						total2++;
+						total1 ++;
+						total2 ++;
 					}
 						
 					else if(dataset[row][col].equals(comp) && dataset[row][colCount-1].equals("nl"))
 					{
-						n1++;
-						total1++;
-						total2++;
+						n1 ++;
+						total1 ++;
+						total2 ++;
 					}
 						
 				} 
-				if(total1== 0)
+				if(total1 == 0)
 					continue;
 				
-				double entropy = calculateEntropyOfDataset(p1,n1,total1);
-				avgEntropy += ((p1+n1)/(1.0*total2))*entropy;
+				double entropy = calculateEntropyOfDataset(p1, n1, total1);
+				avgEntropy += ((p1 + n1) / (1.0 * total2)) * entropy;
 			}
 			
 			if(entropyDS - avgEntropy > gain)
@@ -228,14 +229,13 @@ public class Train
 	
 	public static void treeHelperFunc(TreeNode root)
 	{
-		if(root.colNum==-1)
+		if(root.colNum == -1)
 			return;
 		root.ifTrue = new TreeNode(findNextFeature(root,"T"),root,"T");
 		if(root.ifTrue.colNum == -1)
 		{
 			root.ifTrue.decision = decision;
 			root.ifTrue.leafNode = true;
-			//return;
 		}
 		treeHelperFunc(root.ifTrue);
 		
@@ -246,7 +246,6 @@ public class Train
 		{
 			root.ifFalse.decision = decision;
 			root.ifFalse.leafNode = true;
-			//return;
 		}
 
 		treeHelperFunc(root.ifFalse);
@@ -281,16 +280,16 @@ public class Train
 
 		String x = "";
 		
-		for(int col = 1; col < dataset[0].length -1; col++)
+		for(int col = 1; col < dataset[0].length -1; col ++)
 		{
 			if(node.parents.containsKey(col) || col == node.colNum)
 				continue;
 			double avgEntropy = 0.0;
 			double total2 = 0.0;
-			for(int bin = 0; bin < 2 ; bin++)
+			for(int bin = 0; bin < 2 ; bin ++)
 			{
 				String comp = "F";
-				if(bin==1)
+				if(bin == 1)
 					comp = "T";
 				double total1 = 0.0;
 				double p1 = 0;
@@ -299,32 +298,32 @@ public class Train
 				{
 					if(dataset[row][col].equals(comp) && dataset[row][colCount-1].equals("en"))
 					{
-						p1++;
-						total1++;
-						total2++;
+						p1 ++;
+						total1 ++;
+						total2 ++;
 					}
 						
 					else if(dataset[row][col].equals(comp) && dataset[row][colCount-1].equals("nl"))
 					{
-						n1++;
-						total1++;
-						total2++;
+						n1 ++;
+						total1 ++;
+						total2 ++;
 					}
 						
 				} 
-				if(total1== 0)
+				if(total1 == 0)
 					continue;
 				
-				if(p1>=n1 && val.equals(comp))
+				if(p1 >= n1 && val.equals(comp))
 				{
 					x = "T";
 				}
-				else if(n1>p1 && val.equals(comp))
+				else if(n1 > p1 && val.equals(comp))
 				{
 					x = "F";
 				}
-				double entropy = calculateEntropyOfDataset(p1,n1,total1);
-				avgEntropy += ((p1+n1)/(1.0*total2))*entropy;
+				double entropy = calculateEntropyOfDataset(p1, n1, total1);
+				avgEntropy += ((p1 + n1) / (1.0 * total2)) * entropy;
 			}
 			
 			if(entropyDS - avgEntropy > gain)
@@ -380,7 +379,6 @@ public class Train
 		ArrayList<Integer> incorrectIndex = new ArrayList<>();
 		for(int j = 1; j < colCount; j++)
 		{
-			//System.out.println(j);
 			double p1 = 0;
 			double n1 = 0;
 			double entropy = 0;
@@ -389,30 +387,29 @@ public class Train
 			
 			for(int i = 0; i<rowCount; i++)
 			{
-				//System.out.println(" ---");
 				if(t.contains(j))
 				{
 					x.forTrue = "nl";
 					if(dataset[i][j].equals("T") && dataset[i][12].equals("nl"))
 					{
-						p1++;
-						total1++;
+						p1 ++;
+						total1 ++;
 					}
 					else if(dataset[i][j].equals("T") && dataset[i][12].equals("en"))
 					{
-						n1++;
-						total1++;
+						n1 ++;
+						total1 ++;
 						temp.add(i);
 					}
 					else if(dataset[i][j].equals("F") && dataset[i][12].equals("en"))
 					{
-						p1++;
-						total1++;
+						p1 ++;
+						total1 ++;
 					}
 					else if(dataset[i][j].equals("F") && dataset[i][12].equals("nl"))
 					{
-						n1++;
-						total1++;
+						n1 ++;
+						total1 ++;
 						temp.add(i);
 					}
 				}
@@ -421,31 +418,31 @@ public class Train
 					x.forTrue = "en";
 					if(dataset[i][j].equals("T") && dataset[i][12].equals("en"))
 					{
-						p1++;
-						total1++;
+						p1 ++;
+						total1 ++;
 					}
 					else if(dataset[i][j].equals("T") && dataset[i][12].equals("nl"))
 					{
-						n1++;
-						total1++;
+						n1 ++;
+						total1 ++;
 						temp.add(i);
 					}
 					else if(dataset[i][j].equals("F") && dataset[i][12].equals("nl"))
 					{
-						p1++;
-						total1++;
+						p1 ++;
+						total1 ++;
 					}
 					else if(dataset[i][j].equals("F") && dataset[i][12].equals("en"))
 					{
-						n1++;
-						total1++;
+						n1 ++;
+						total1 ++;
 						temp.add(i);
 					}
 					
 				}
 				
 			}
-			if(total1== 0)
+			if(total1 == 0)
 				continue;
 			
 			entropy = calculateEntropyOfDataset(p1, n1, total1);
@@ -465,19 +462,19 @@ public class Train
 		x.colNum = col;
 		
 		double error = 0;
-		for(int index: incorrectIndex)
+		for(int index : incorrectIndex)
 		{
 			 error += sampleWeight[index];
 		}
 		
-		error = 0.5*(Math.log((1-error)/(1.0*error)));
+		error = 0.5 * (Math.log((1 - error) / (1.0 * error)));
 		x.amountOfSay = error;
 		
 		for(int row = 0; row < rowCount ; row++)
 		{
 			if(incorrectIndex.contains(row))
 			{
-				sampleWeight[row] = sampleWeight[row] * Math.pow(Math.E,error);
+				sampleWeight[row] = sampleWeight[row] * Math.pow(Math.E, error);
 			}
 			else 
 				sampleWeight[row] = sampleWeight[row] * Math.pow(Math.E, -error);
@@ -489,25 +486,25 @@ public class Train
 		
 		for(int row = 0; row < rowCount ; row++)
 		{
-			sampleWeight[row] = sampleWeight[row]/sumOfSampleWeights;
+			sampleWeight[row] = sampleWeight[row] / sumOfSampleWeights;
 			sum += sampleWeight[row];
 			sumArray[row] = sum;
 		}
 		
 		String newDataset[][] = new String[dataset.length][dataset[0].length];
-		for(int i = 0; i<dataset.length; i++)
+		for(int i = 0; i < dataset.length; i++)
 		{
 			double random = Math.random();
 			int j = 0;
 			for(j = sumArray.length-1; j>0; j--)
 			{
-				if(sumArray[j-1] < random)
+				if(sumArray[j - 1] < random)
 				{
 					newDataset[i] = dataset[j];
 					break;
 				}
 			}
-			if(j==0)
+			if(j == 0)
 				newDataset[i] = dataset[0];
 		}
 		dataset = newDataset;
