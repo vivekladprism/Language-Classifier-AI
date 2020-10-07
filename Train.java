@@ -41,6 +41,13 @@ public class Train
 	public static Map<TreeNode, Double> map = new HashMap<>();
 	public static List<TreeNode> toFile = new ArrayList<>();
 	
+	/*
+		The function takes reads the commands from the command line
+		inputFileName - File containing the training data text
+		OutputFileName - File storing the decision tree object
+		algorithmToUse - "dt" for decision tree, "ada" for adaboost
+	*/
+
 	public static void readFromCommandLine(String args[])
 	{
 		inputFileName = args[0];
@@ -48,6 +55,11 @@ public class Train
 		algorithmToUse = args[2];
 	}
 	
+	/*
+	  Read lines from the training data file
+	  and store them in the sentences list
+	*/
+
 	public static void readSentencesFromFile() throws IOException
 	{
 		sentences = new ArrayList<>();
@@ -64,6 +76,12 @@ public class Train
 		bufferedReader.close();
 	}
 	
+	/*
+	  Dataset table is created with features as columns and rows as sentences attributes
+	  If the given sentence has a particular feature, that feature column will be set
+	  to "T", else it will be set to "F".
+	*/
+
 	public static void createDatasetTable()
 	{
 		dataset = new String[sentences.size()][numOfFeatures + 2];
@@ -123,6 +141,11 @@ public class Train
 		colCount = dataset[0].length;
 	}
 	
+	/*
+	  Dataset Matrix is initialized with all values as  "F" excluding the classification
+	  feature column.
+	*/
+
 	public static void initializeDataset()
 	{
 		for(int row = 0; row < dataset.length; row++)
@@ -134,6 +157,10 @@ public class Train
 		}
 	}
 	
+	/*
+	  Prints the dataset matrix.
+	*/	
+
 	public static void displayDataset()
 	{
 		for(int row = 0; row < dataset.length; row++)
@@ -146,6 +173,10 @@ public class Train
 		}
 	}
 	
+	/*
+	  Entropy of dataset is caluclated. Formula is -
+	  
+	*/
 	public static double calculateEntropyOfDataset(double p, double n, double total)
 	{
 		double e1 = p / (1.0 * (p + n));
