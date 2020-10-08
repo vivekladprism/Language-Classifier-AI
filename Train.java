@@ -174,7 +174,7 @@ public class Train
 	}
 	
 	/*
-	  Entropy of dataset is caluclated. Formula is -
+	  Entropy of dataset is caluclated.
 	  
 	*/
 	public static double calculateEntropyOfDataset(double p, double n, double total)
@@ -200,6 +200,12 @@ public class Train
 		return entropy;
 	}
 	
+	/*
+	  Finds the root in the decision tree. That is,
+	  The first node in the decision tree.
+	  Feature with highest information gain is selected as the root.
+	*/
+
 	public static int findRoot()
 	{
 		double gain = Double.MIN_VALUE;
@@ -251,6 +257,10 @@ public class Train
 		return root;
 	}
 	
+	/*
+	  Calls the treeHelperFunction on root to complete the decision tree
+	*/
+
 	public static void createTree()
 	{
 		TreeNode root = new TreeNode(rootNodeNum,null,null);
@@ -258,6 +268,10 @@ public class Train
 		treeHelperFunc(root);
 	}
 	
+	/*
+	  Adds the left and right child for a particular node in the decision tree
+	*/	
+
 	public static void treeHelperFunc(TreeNode root)
 	{
 		if(root.colNum == -1)
@@ -282,6 +296,11 @@ public class Train
 		treeHelperFunc(root.ifFalse);
 		
 	}
+
+	/*
+	  From one node, finds the next feature for the child Node.
+	*/
+
 	public static int findNextFeature(TreeNode node, String val)
 	{
 		Set<Integer> rowNums = new HashSet<>();
@@ -367,6 +386,10 @@ public class Train
 		return root;
 	}
 	
+	/*
+	  Writes the decision tree object or the adaboost object to output file
+	*/	
+
 	public static void writeToFile() throws IOException
 	{
 		OutputStream file = new FileOutputStream( outputFileName);
@@ -381,6 +404,9 @@ public class Train
 
 	}
 	
+	/*
+	  
+	*/	
 	public static void createAndAssignSampleWeights()
 	{
 		sampleWeight = new double[sentences.size()];
@@ -398,10 +424,19 @@ public class Train
 			sumOfSampleWeights += sampleWeight[i];
 		}
 	}
+ 	
+	/*
+	  adds Dutch Language features to the set
+	*/
+
 	public static void addDutchFeaturesToSet()
 	{
 		t.add(1);t.add(3);t.add(5);t.add(6);t.add(7);t.add(8);t.add(9);
 	}
+
+	/*
+	  
+	*/
 	public static int findMinStump()
 	{
 		TreeNode x = new TreeNode();
