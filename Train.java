@@ -36,7 +36,7 @@ public class Train
 	public static double correct = 0;
 	public static double incorrect = 0;
 	public static double sumOfSampleWeights = 0;
-	public static Set<Integer> t = new HashSet<>();
+	public static Set<Integer> DutchLanguageFeatures = new HashSet<>();
 	public static int sumArray[];
 	public static Map<TreeNode, Double> map = new HashMap<>();
 	public static List<TreeNode> toFile = new ArrayList<>();
@@ -116,7 +116,9 @@ public class Train
 				if(word.toLowerCase().equals("are") )
 					dataset[sentenceIndex][10] = "T";
 
-				if(word.toLowerCase().equals("that") || word.toLowerCase().equals("there") || word.toLowerCase().equals("these") || word.toLowerCase().equals("this") || word.toLowerCase().equals("them"))
+				if(word.toLowerCase().equals("that") || word.toLowerCase().equals("there") ||
+						word.toLowerCase().equals("these") || word.toLowerCase().equals("this") ||
+						word.toLowerCase().equals("them"))
 					dataset[sentenceIndex][11] = "T";
 				
 				if(index == 0)
@@ -233,7 +235,8 @@ public class Train
 						total2 ++;
 					}
 						
-					else if(dataset[row][col].equals(comp) && dataset[row][colCount-1].equals("nl"))
+					else if(dataset[row][col].equals(comp) &&
+							dataset[row][colCount-1].equals("nl"))
 					{
 						n1 ++;
 						total1 ++;
@@ -401,12 +404,12 @@ public class Train
 		else
 			oo.writeObject(toFile);
 		oo.close();
-
 	}
 	
 	/*
 	  
 	*/	
+	
 	public static void createAndAssignSampleWeights()
 	{
 		sampleWeight = new double[sentences.size()];
@@ -431,7 +434,9 @@ public class Train
 
 	public static void addDutchFeaturesToSet()
 	{
-		t.add(1);t.add(3);t.add(5);t.add(6);t.add(7);t.add(8);t.add(9);
+		DutchLanguageFeatures.add(1);DutchLanguageFeatures.add(3);DutchLanguageFeatures.add(5);
+		DutchLanguageFeatures.add(6);DutchLanguageFeatures.add(7);DutchLanguageFeatures.add(8);
+		DutchLanguageFeatures.add(9);
 	}
 
 	/*
@@ -453,29 +458,25 @@ public class Train
 			
 			for(int i = 0; i<rowCount; i++)
 			{
-				if(t.contains(j))
+				if(DutchLanguageFeatures.contains(j))
 				{
 					x.forTrue = "nl";
 					if(dataset[i][j].equals("T") && dataset[i][12].equals("nl"))
 					{
 						p1 ++;
-						total1 ++;
 					}
 					else if(dataset[i][j].equals("T") && dataset[i][12].equals("en"))
 					{
 						n1 ++;
-						total1 ++;
 						temp.add(i);
 					}
 					else if(dataset[i][j].equals("F") && dataset[i][12].equals("en"))
 					{
 						p1 ++;
-						total1 ++;
 					}
 					else if(dataset[i][j].equals("F") && dataset[i][12].equals("nl"))
 					{
 						n1 ++;
-						total1 ++;
 						temp.add(i);
 					}
 				}
@@ -485,27 +486,25 @@ public class Train
 					if(dataset[i][j].equals("T") && dataset[i][12].equals("en"))
 					{
 						p1 ++;
-						total1 ++;
 					}
 					else if(dataset[i][j].equals("T") && dataset[i][12].equals("nl"))
 					{
 						n1 ++;
-						total1 ++;
+
 						temp.add(i);
 					}
 					else if(dataset[i][j].equals("F") && dataset[i][12].equals("nl"))
 					{
 						p1 ++;
-						total1 ++;
 					}
 					else if(dataset[i][j].equals("F") && dataset[i][12].equals("en"))
 					{
 						n1 ++;
-						total1 ++;
 						temp.add(i);
 					}
 					
 				}
+				total1 ++;
 				
 			}
 			if(total1 == 0)
@@ -519,10 +518,7 @@ public class Train
 				correct = p1;
 				incorrect = n1;
 				incorrectIndex = temp;
-				
 			}
-			
-			
 		}
 		
 		x.colNum = col;
@@ -611,13 +607,9 @@ public class Train
 		}
 		else if(algorithmToUse.equals("ada"))
 		{
-			
 			adaBoost();
-			writeToFile();
-						
+			writeToFile();			
 		}
-		
-		
 	}
 
 }
